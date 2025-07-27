@@ -7,6 +7,7 @@ const client = createPublicClient({
   chain: sepolia,
   transport: http(),
 })
+let client2
 const helloWorldABI =[
 	{
 		"inputs": [
@@ -77,7 +78,7 @@ const helloWorldABI =[
 	}
 ]
 let account
-const CONTRACT_ADDRESS = '0x358AA13c52544ECCEF6B0ADD0f801012ADAD5eE3'
+const CONTRACT_ADDRESS = '0x0e30788fD72f5e8D293101eBc7B64CF8dC68dF4b'
 const blockNumber = await client.getBlockNumber()
 function App() {
   const [num, setNum] = useState(blockNumber)
@@ -85,7 +86,7 @@ function App() {
   const [result, setResult] = useState('')
   const c_fn = async () => {
     if (window.ethereum) {
-      const client2 = createWalletClient({
+       client2 = createWalletClient({
         chain: sepolia,
         transport: custom(window.ethereum)
       })
@@ -102,14 +103,14 @@ function App() {
     console.log(data)
   }
   const change_fn = async () => {
-    let result=await client.simulateContract({
+    let {request}=await client.simulateContract({
       account: account[0],
       address: CONTRACT_ADDRESS,
       abi: helloWorldABI,
       functionName: 'setInfo',
       args: ['你好', 10]
     })
-    console.log(result,'mm')
+	await client2.writeContract(request)
   }
   return (
     <div className="App">
